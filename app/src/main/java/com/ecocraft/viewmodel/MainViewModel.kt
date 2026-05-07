@@ -20,7 +20,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _userState = MutableStateFlow(UserState())
     val userState: StateFlow<UserState> = _userState.asStateFlow()
 
-    // Transient UI events
     private val _newAchievement = MutableStateFlow<NewAchievement?>(null)
     val newAchievement: StateFlow<NewAchievement?> = _newAchievement.asStateFlow()
 
@@ -42,7 +41,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val newPoints = current.points + task.pointsPerCompletion
         val newCounts = current.taskCounts + (taskId to newCount)
 
-        // Check newly unlocked achievements
         val newlyUnlocked = task.achievements.filter { ach ->
             newCount == ach.targetCount && !current.unlockedAchievementIds.contains(ach.id)
         }
@@ -55,10 +53,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         )
         _userState.value = newState
         _lastEarnedPoints.value = task.pointsPerCompletion
+        repo.saveUserState(newState)
 
-        viewModelScope.launch { repo.saveUserState(newState) }
-
-        // Fire achievement toast for the first newly unlocked one
         if (newlyUnlocked.isNotEmpty()) {
             val ach = newlyUnlocked.first()
             viewModelScope.launch {
@@ -74,12 +70,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun updateUsername(name: String) {
         val newState = _userState.value.copy(username = name.trim().ifEmpty { "Эко-путник" })
         _userState.value = newState
-        viewModelScope.launch { repo.saveUserState(newState) }
+        repo.saveUserState(newState)
     }
 
     fun updateAvatar(index: Int) {
         val newState = _userState.value.copy(avatarIndex = index)
         _userState.value = newState
-        viewModelScope.launch { repo.saveUserState(newState) }
+        repo.saveUserState(newState)
     }
 }
