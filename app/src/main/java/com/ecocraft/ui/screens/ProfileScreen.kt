@@ -19,7 +19,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -43,14 +42,16 @@ fun ProfileScreen(
     onUpdateAvatar: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val (level, nextLevel, progress) = EcoData.getLevelInfo(userState.points)
+    val levelInfo = EcoData.getLevelInfo(userState.points)
+    val level = levelInfo.current
+    val nextLevel = levelInfo.next
+    val progress = levelInfo.progress
     val avatar = EcoData.avatars.getOrElse(userState.avatarIndex) { "🌱" }
 
     var showNameDialog by remember { mutableStateOf(false) }
 
     Column(modifier = modifier.fillMaxSize().background(GreenBackground)) {
 
-        // ── Header ────────────────────────────────────────────────────────
         GradientHeader {
             IconButton(
                 onClick = onNavigateBack,
@@ -68,7 +69,10 @@ fun ProfileScreen(
                 Column {
                     Text(userState.username, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color.White)
                     Spacer(Modifier.height(4.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
                         Text(level.icon, fontSize = 16.sp)
                         Text(level.name, fontSize = 14.sp, color = Color.White.copy(alpha = 0.85f))
                         Text("· ${userState.points} ⭐", fontSize = 13.sp, color = Color.White.copy(alpha = 0.7f))
@@ -97,8 +101,6 @@ fun ProfileScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(20.dp)
         ) {
-
-            // ── Avatar picker ─────────────────────────────────────────────
             SectionLabel("Выбери аватар")
             Spacer(Modifier.height(14.dp))
 
@@ -130,8 +132,6 @@ fun ProfileScreen(
             }
 
             Spacer(Modifier.height(28.dp))
-
-            // ── Level progress ────────────────────────────────────────────
             SectionLabel("Прогресс уровня")
             Spacer(Modifier.height(14.dp))
 
@@ -141,7 +141,6 @@ fun ProfileScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
-                    // Level icons row
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceAround
@@ -189,7 +188,6 @@ fun ProfileScreen(
         }
     }
 
-    // ── Name edit dialog ──────────────────────────────────────────────────
     if (showNameDialog) {
         var tempName by remember { mutableStateOf(userState.username) }
         Dialog(onDismissRequest = { showNameDialog = false }) {

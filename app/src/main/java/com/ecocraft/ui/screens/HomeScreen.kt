@@ -9,7 +9,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -27,41 +26,37 @@ fun HomeScreen(
     onNavigateProfile: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val (level, nextLevel, progress) = EcoData.getLevelInfo(userState.points)
+    val levelInfo = EcoData.getLevelInfo(userState.points)
+    val level = levelInfo.current
+    val nextLevel = levelInfo.next
+    val progress = levelInfo.progress
 
     Box(modifier = modifier.fillMaxSize().background(GreenBackground)) {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
 
-            // ── Header ────────────────────────────────────────────────────
             GradientHeader {
-                // Decorative background emoji
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Column {
-                        Text(
-                            "Добро пожаловать",
-                            fontSize = 12.sp,
-                            letterSpacing = 2.sp,
-                            color = Color.White.copy(alpha = 0.7f)
-                        )
-                        Spacer(Modifier.height(4.dp))
-                        Text(
-                            userState.username,
-                            fontSize = 26.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                        Spacer(Modifier.height(2.dp))
-                        Text(
-                            "${level.icon}  ${level.name}",
-                            fontSize = 14.sp,
-                            color = Color.White.copy(alpha = 0.85f)
-                        )
-                    }
-                }
+                Text(
+                    "Добро пожаловать",
+                    fontSize = 12.sp,
+                    letterSpacing = 2.sp,
+                    color = Color.White.copy(alpha = 0.7f)
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    userState.username,
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    "${level.icon}  ${level.name}",
+                    fontSize = 14.sp,
+                    color = Color.White.copy(alpha = 0.85f)
+                )
 
                 Spacer(Modifier.height(20.dp))
 
-                // Points + progress card
                 Card(
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(
@@ -94,7 +89,6 @@ fun HomeScreen(
                 }
             }
 
-            // ── Nav cards ─────────────────────────────────────────────────
             Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 24.dp)) {
                 SectionLabel("Навигация")
                 Spacer(Modifier.height(14.dp))
@@ -120,7 +114,6 @@ fun HomeScreen(
                     onClick = onNavigateProfile
                 )
 
-                // ── Stats row ─────────────────────────────────────────────
                 Spacer(Modifier.height(24.dp))
                 SectionLabel("Моя статистика")
                 Spacer(Modifier.height(14.dp))
