@@ -1,8 +1,6 @@
-package com.ecoquest.data
+package com.ecocraft.data
 
 import kotlinx.serialization.Serializable
-
-// ─── Achievement ────────────────────────────────────────────────────────────
 
 data class Achievement(
     val id: String,
@@ -12,8 +10,6 @@ data class Achievement(
     val icon: String,
     val taskId: String
 )
-
-// ─── Task ───────────────────────────────────────────────────────────────────
 
 data class EcoTask(
     val id: String,
@@ -25,15 +21,11 @@ data class EcoTask(
     val achievements: List<Achievement>
 )
 
-// ─── Level ──────────────────────────────────────────────────────────────────
-
 data class Level(
     val name: String,
     val minPoints: Int,
     val icon: String
 )
-
-// ─── Persisted user state (DataStore) ───────────────────────────────────────
 
 @Serializable
 data class UserState(
@@ -43,8 +35,6 @@ data class UserState(
     val taskCounts: Map<String, Int> = emptyMap(),
     val unlockedAchievementIds: List<String> = emptyList()
 )
-
-// ─── Static data ────────────────────────────────────────────────────────────
 
 object EcoData {
 
@@ -70,9 +60,9 @@ object EcoData {
                     "Каждая сданная батарейка — реальный вклад в здоровье планеты!",
             pointsPerCompletion = 30,
             achievements = listOf(
-                Achievement("bat_1",  "Первый шаг",     "Сдать батарейки 1 раз",  1,  "⚡", "batteries"),
-                Achievement("bat_5",  "Эко-герой",      "Сдать батарейки 5 раз",  5,  "🌿", "batteries"),
-                Achievement("bat_15", "Хранитель земли","Сдать батарейки 15 раз", 15, "🏆", "batteries")
+                Achievement("bat_1",  "Первый шаг",      "Сдать батарейки 1 раз",  1,  "⚡", "batteries"),
+                Achievement("bat_5",  "Эко-герой",       "Сдать батарейки 5 раз",  5,  "🌿", "batteries"),
+                Achievement("bat_15", "Хранитель земли", "Сдать батарейки 15 раз", 15, "🏆", "batteries")
             )
         ),
         EcoTask(
@@ -93,7 +83,9 @@ object EcoData {
         )
     )
 
-    fun getLevelInfo(points: Int): Triple<Level, Level?, Float> {
+    data class LevelInfo(val current: Level, val next: Level?, val progress: Float)
+
+    fun getLevelInfo(points: Int): LevelInfo {
         var current = levels.first()
         var nextIdx = 1
         for (i in levels.indices.reversed()) {
@@ -107,6 +99,6 @@ object EcoData {
         val progress = if (next != null) {
             ((points - current.minPoints).toFloat() / (next.minPoints - current.minPoints)).coerceIn(0f, 1f)
         } else 1f
-        return Triple(current, next, progress)
+        return LevelInfo(current, next, progress)
     }
 }
