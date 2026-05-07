@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.ecoquest"
+    namespace = "com.ecocraft"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.ecoquest"
+        applicationId = "com.ecocraft"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
