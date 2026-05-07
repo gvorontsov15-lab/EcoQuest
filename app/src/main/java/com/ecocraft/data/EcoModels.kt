@@ -1,6 +1,5 @@
 package com.ecocraft.data
 
-import kotlinx.serialization.Serializable
 
 data class Achievement(
     val id: String,
@@ -27,7 +26,6 @@ data class Level(
     val icon: String
 )
 
-@Serializable
 data class UserState(
     val username: String = "Эко-путник",
     val avatarIndex: Int = 0,
