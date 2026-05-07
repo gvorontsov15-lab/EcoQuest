@@ -40,14 +40,12 @@ fun EcoQuestApp() {
     val newAchievement by viewModel.newAchievement.collectAsState()
     val lastEarnedPoints by viewModel.lastEarnedPoints.collectAsState()
 
-    // Auto-dismiss achievement toast after 3 seconds
     LaunchedEffect(newAchievement) {
         if (newAchievement != null) {
             kotlinx.coroutines.delay(3000)
             viewModel.clearAchievementToast()
         }
     }
-    // Auto-dismiss earned points after 1.5 seconds
     LaunchedEffect(lastEarnedPoints) {
         if (lastEarnedPoints != null) {
             kotlinx.coroutines.delay(1500)
@@ -64,10 +62,8 @@ fun EcoQuestApp() {
                 onCompleteTask = { viewModel.completeTask(it) },
                 onUpdateUsername = { viewModel.updateUsername(it) },
                 onUpdateAvatar = { viewModel.updateAvatar(it) },
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize().padding(innerPadding)
             )
-
-            // Global achievement toast overlay
             AchievementToast(
                 achievement = newAchievement,
                 modifier = Modifier
